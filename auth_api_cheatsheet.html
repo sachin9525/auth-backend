@@ -1,0 +1,279 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1.5rem 1rem;display:flex;flex-direction:column;gap:1.5rem}
+.section-title{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:.6rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.card-header{padding:.6rem 1rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:8px}
+.card-header .method{font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px}
+.get{background:#e1f5ee;color:#0f6e56}.post{background:#e6f1fb;color:#185fa5}.patch{background:#faeeda;color:#854f0b}.delete{background:#fcebeb;color:#a32d2d}
+.card-header .route{font-size:13px;font-weight:500;color:var(--color-text-primary);font-family:var(--font-mono)}
+.card-header .badge{margin-left:auto;font-size:10px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.private{background:var(--color-background-warning);color:var(--color-text-warning)}
+.admin{background:var(--color-background-danger);color:var(--color-text-danger)}
+.public{background:var(--color-background-success);color:var(--color-text-success)}
+.card-body{padding:.75rem 1rem;display:flex;flex-direction:column;gap:.5rem}
+.row{display:flex;gap:.5rem;font-size:12px;align-items:flex-start}
+.row .label{color:var(--color-text-tertiary);min-width:62px;flex-shrink:0;padding-top:1px}
+.row .val{color:var(--color-text-primary);font-family:var(--font-mono);font-size:11.5px;line-height:1.5}
+.row .val.plain{font-family:var(--font-sans);font-size:12px}
+.row .val code{background:var(--color-background-secondary);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:11px}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:.25rem 0}
+.tag{display:inline-block;font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;margin-right:3px;margin-bottom:2px}
+.tag.warn{background:#faeeda;color:#854f0b}
+.tag.info{background:#e6f1fb;color:#185fa5}
+.tag.ok{background:#e1f5ee;color:#0f6e56}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.tip-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.6rem .85rem;font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.tip-card strong{color:var(--color-text-primary);font-weight:500}
+.err-row{display:flex;align-items:center;gap:8px;font-size:12px;padding:.3rem 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.err-row:last-child{border-bottom:none}
+.err-code{font-family:var(--font-mono);font-size:11px;font-weight:500;min-width:28px}
+.err-code.c4{color:var(--color-text-warning)}
+.err-code.c5{color:var(--color-text-danger)}
+.err-msg{color:var(--color-text-secondary);flex:1}
+.err-fix{color:var(--color-text-tertiary);font-size:11px;text-align:right}
+.flow-step{display:flex;align-items:flex-start;gap:10px;padding:.4rem 0}
+.flow-num{width:20px;height:20px;border-radius:50%;background:var(--color-background-info);color:var(--color-text-info);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.flow-text{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.flow-text strong{color:var(--color-text-primary);font-weight:500}
+.flow-arr{color:var(--color-text-tertiary);margin-left:30px;font-size:11px;padding:.1rem 0}
+h2{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+</style>
+<div class="wrap">
+
+<div style="display:flex;align-items:center;justify-content:space-between">
+  <h2>Auth API — Full Cheatsheet</h2>
+  <span style="font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)">localhost:5000</span>
+</div>
+
+<div>
+  <div class="section-title">Auth Routes — /api/auth</div>
+  <div style="display:flex;flex-direction:column;gap:.6rem">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/signup</span>
+        <span class="badge public">Public</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>name</code> <code>email</code> <code>password</code> <code>confirmPassword</code></span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">user object · sends verification email</span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain"><span class="tag warn">Duplicate email → 409</span><span class="tag warn">Passwords mismatch → 422</span><span class="tag warn">Weak password → 422</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method get">GET</span>
+        <span class="route">/api/auth/verify-email/:token</span>
+        <span class="badge public">Public</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Param</span><span class="val">token from email link</span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">success · sends welcome email</span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain"><span class="tag warn">Expired (24h) → 400</span><span class="tag warn">Already verified → 400</span><span class="tag warn">Wrong token → 400</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/resend-verification</span>
+        <span class="badge public">Public</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>email</code></span></div>
+        <div class="row"><span class="label">Note</span><span class="val plain">Same response whether email exists or not (prevents enumeration)</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/signin</span>
+        <span class="badge public">Public · Rate limited (10/15min)</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>email</code> <code>password</code></span></div>
+        <div class="row"><span class="label">Returns</span><span class="val"><code>accessToken</code> + <code>refreshToken</code> (httpOnly cookie)</span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain">
+          <span class="tag warn">Wrong password → 401 (remaining attempts shown)</span>
+          <span class="tag warn">5 fails → account locked 30min → 423</span>
+          <span class="tag warn">Unverified email → 403</span>
+          <span class="tag warn">Deactivated → 403</span>
+        </span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/refresh-token</span>
+        <span class="badge public">Public (cookie required)</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Cookie</span><span class="val"><code>refreshToken</code> (auto sent by browser)</span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">new <code>accessToken</code> + rotated <code>refreshToken</code></span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain"><span class="tag warn">Token reuse detected → 401 + cookie cleared</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/forgot-password</span>
+        <span class="badge public">Public · Rate limited (5/hr)</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>email</code></span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">Same response whether email exists or not</span></div>
+        <div class="row"><span class="label">Expires</span><span class="val plain">Token valid for 1 hour</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/reset-password/:token</span>
+        <span class="badge public">Public</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>password</code> <code>confirmPassword</code></span></div>
+        <div class="row"><span class="label">Effect</span><span class="val plain">Invalidates all refresh tokens (force re-login everywhere)</span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain"><span class="tag warn">Expired/invalid → 400</span></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method get">GET</span>
+        <span class="route">/api/auth/me</span>
+        <span class="badge private">🔒 Private</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Header</span><span class="val"><code>Authorization: Bearer &lt;accessToken&gt;</code></span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">Full user profile</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/signout</span>
+        <span class="badge private">🔒 Private</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Effect</span><span class="val plain">Clears refreshToken from DB + clears cookie</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="method post">POST</span>
+        <span class="route">/api/auth/change-password</span>
+        <span class="badge private">🔒 Private</span>
+      </div>
+      <div class="card-body">
+        <div class="row"><span class="label">Body</span><span class="val"><code>currentPassword</code> <code>newPassword</code> <code>confirmPassword</code></span></div>
+        <div class="row"><span class="label">Corner</span><span class="val plain"><span class="tag warn">Same as old → 422</span><span class="tag warn">Wrong current → 401</span></span></div>
+        <div class="row"><span class="label">Effect</span><span class="val plain">Logs out all devices (tokens revoked)</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div>
+  <div class="section-title">Admin Routes — /api/admin (👑 Admin role required)</div>
+  <div style="display:flex;flex-direction:column;gap:.6rem">
+
+    <div class="card">
+      <div class="card-header"><span class="method get">GET</span><span class="route">/api/admin/users</span><span class="badge admin">👑 Admin</span></div>
+      <div class="card-body">
+        <div class="row"><span class="label">Query</span><span class="val"><code>?page=1&limit=10&role=user&verified=true</code></span></div>
+        <div class="row"><span class="label">Returns</span><span class="val plain">Paginated user list</span></div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:4px"><span class="method patch">PATCH</span><span class="route" style="font-size:11px">/users/:id/role</span></div>
+        <div class="card-body"><div class="row"><span class="label">Body</span><span class="val"><code>role</code></span></div><div class="row"><span class="label">Corner</span><span class="val plain" style="font-size:11px">Can't change own role</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:4px"><span class="method patch">PATCH</span><span class="route" style="font-size:11px">/users/:id/status</span></div>
+        <div class="card-body"><div class="row"><span class="label">Effect</span><span class="val plain" style="font-size:11px">Toggle active/inactive</span></div><div class="row"><span class="label">Corner</span><span class="val plain" style="font-size:11px">Can't deactivate self</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:4px"><span class="method delete">DELETE</span><span class="route" style="font-size:11px">/users/:id</span></div>
+        <div class="card-body"><div class="row"><span class="label">Corner</span><span class="val plain" style="font-size:11px">Can't delete own account</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="section-title">Complete Testing Flow</div>
+  <div class="card">
+    <div class="card-body" style="gap:.1rem">
+      <div class="flow-step"><span class="flow-num">1</span><span class="flow-text"><strong>POST /signup</strong> — name, email, password, confirmPassword</span></div>
+      <div class="flow-arr">↓ check Mailtrap inbox → copy token from link</div>
+      <div class="flow-step"><span class="flow-num">2</span><span class="flow-text"><strong>GET /verify-email/:token</strong> — paste token in URL</span></div>
+      <div class="flow-arr">↓ email verified ✅</div>
+      <div class="flow-step"><span class="flow-num">3</span><span class="flow-text"><strong>POST /signin</strong> — copy <code>accessToken</code> from response</span></div>
+      <div class="flow-arr">↓ set Authorization: Bearer &lt;accessToken&gt; in Postman</div>
+      <div class="flow-step"><span class="flow-num">4</span><span class="flow-text"><strong>GET /me</strong> — test protected route works</span></div>
+      <div class="flow-arr">↓ change role to "admin" in MongoDB → re-signin</div>
+      <div class="flow-step"><span class="flow-num">5</span><span class="flow-text"><strong>GET /admin/users</strong> — test admin route with new token</span></div>
+      <div class="flow-arr">↓ test forgot password flow</div>
+      <div class="flow-step"><span class="flow-num">6</span><span class="flow-text"><strong>POST /forgot-password</strong> → check Mailtrap → <strong>POST /reset-password/:token</strong></span></div>
+      <div class="flow-arr">↓ token expired? wait 15min → re-signin</div>
+      <div class="flow-step"><span class="flow-num">7</span><span class="flow-text"><strong>POST /refresh-token</strong> — get new accessToken (no body needed, uses cookie)</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="section-title">Common Errors & Fixes</div>
+  <div class="card">
+    <div class="card-body" style="gap:0;padding:.5rem 1rem">
+      <div class="err-row"><span class="err-code c4">422</span><span class="err-msg">Validation failed</span><span class="err-fix">Check all required fields + password rules</span></div>
+      <div class="err-row"><span class="err-code c4">401</span><span class="err-msg">No token provided</span><span class="err-fix">Add Authorization: Bearer &lt;token&gt; header</span></div>
+      <div class="err-row"><span class="err-code c4">401</span><span class="err-msg">Token expired</span><span class="err-fix">Hit /refresh-token → use new accessToken</span></div>
+      <div class="err-row"><span class="err-code c4">403</span><span class="err-msg">Email not verified</span><span class="err-fix">Check Mailtrap → click verify link</span></div>
+      <div class="err-row"><span class="err-code c4">403</span><span class="err-msg">Requires role: admin</span><span class="err-fix">Change role in MongoDB → re-signin</span></div>
+      <div class="err-row"><span class="err-code c4">400</span><span class="err-msg">Invalid/expired token</span><span class="err-fix">Get fresh token from email (resend if needed)</span></div>
+      <div class="err-row"><span class="err-code c4">409</span><span class="err-msg">Email already exists</span><span class="err-fix">Use different email or login instead</span></div>
+      <div class="err-row"><span class="err-code c4">423</span><span class="err-msg">Account locked</span><span class="err-fix">Wait 30 min or reset password</span></div>
+      <div class="err-row"><span class="err-code c5">500</span><span class="err-msg">Server error</span><span class="err-fix">Check .env values + MongoDB connection</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="section-title">Password Rules</div>
+  <div class="grid2">
+    <div class="tip-card"><strong>Min 8 characters</strong><br>At least one uppercase (A-Z)</div>
+    <div class="tip-card"><strong>At least one lowercase</strong> (a-z)<br>At least one number (0-9)</div>
+    <div class="tip-card"><strong>Special char required</strong><br><code>@ $ ! % * ? & # ^</code></div>
+    <div class="tip-card"><strong>Example valid password</strong><br><code>Sachin@123</code> ✅</div>
+  </div>
+</div>
+
+<div>
+  <div class="section-title">Security Features</div>
+  <div class="grid2">
+    <div class="tip-card"><strong>Refresh Token Rotation</strong><br>Every refresh = new token pair. Reuse = auto logout.</div>
+    <div class="tip-card"><strong>Account Lockout</strong><br>5 wrong attempts → locked 30 min automatically.</div>
+    <div class="tip-card"><strong>Email Enumeration Safe</strong><br>Forgot password always returns same message.</div>
+    <div class="tip-card"><strong>Password Change = Logout All</strong><br>All devices logged out when password changes.</div>
+    <div class="tip-card"><strong>httpOnly Cookie</strong><br>refreshToken JS se access nahi hota (XSS safe).</div>
+    <div class="tip-card"><strong>Hashed Tokens in DB</strong><br>Verify/reset tokens SHA-256 hashed before save.</div>
+  </div>
+</div>
+
+</div>
