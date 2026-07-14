@@ -213,6 +213,15 @@ exports.signin = async (req, res) => {
       );
     }
 
+    // Promote only the explicitly configured account after successful auth.
+    const configuredAdminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    if (
+      configuredAdminEmail &&
+      user.email.toLowerCase() === configuredAdminEmail
+    ) {
+      user.role = "admin";
+    }
+
     // 6) Reset login attempts on success
     await user.resetLoginAttempts();
 
