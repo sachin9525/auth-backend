@@ -63,6 +63,16 @@ const protect = async (req, res, next) => {
       );
     }
 
+    const configuredAdminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    if (
+      configuredAdminEmail &&
+      user.email.toLowerCase() === configuredAdminEmail &&
+      user.role !== "admin"
+    ) {
+      user.role = "admin";
+      await user.save({ validateBeforeSave: false });
+    }
+
     req.user = user;
     next();
   } catch (error) {
