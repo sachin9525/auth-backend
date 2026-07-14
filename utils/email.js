@@ -12,6 +12,46 @@ const createTransporter = () => {
   });
 };
 
+const sendEmail = async ({ to, subject, html }) => {
+  if (process.env.BREVO_API_KEY) {
+    const senderEmail = process.env.EMAIL_FROM_EMAIL || process.env.EMAIL_USER;
+    const senderName = process.env.EMAIL_FROM_NAME || "AuthKit";
+
+    if (!senderEmail) {
+      throw new Error("EMAIL_FROM_EMAIL is required when using Brevo.");
+    }
+
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: senderName, email: senderEmail },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
+    });
+
+    if (!response.ok) {
+      const details = (await response.text()).slice(0, 500);
+      throw new Error(`Brevo email API failed (${response.status}): ${details}`);
+    }
+
+    return response.json();
+  }
+
+  return createTransporter().sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject,
+    html,
+  });
+};
+
 // ─── Send Email Verification ───
 const sendVerificationEmail = async (user, token) => {
   const verifyURL = `${process.env.CLIENT_URL}/verify-email/${token}`;
@@ -30,8 +70,7 @@ const sendVerificationEmail = async (user, token) => {
     </div>
   `;
 
-  await createTransporter().sendMail({
-    from: process.env.EMAIL_FROM,
+  await sendEmail({
     to: user.email,
     subject: "Verify Your Email Address",
     html,
@@ -56,8 +95,7 @@ const sendPasswordResetEmail = async (user, token) => {
     </div>
   `;
 
-  await createTransporter().sendMail({
-    from: process.env.EMAIL_FROM,
+  await sendEmail({
     to: user.email,
     subject: "Password Reset Request",
     html,
@@ -74,8 +112,7 @@ const sendWelcomeEmail = async (user) => {
     </div>
   `;
 
-  await createTransporter().sendMail({
-    from: process.env.EMAIL_FROM,
+  await sendEmail({
     to: user.email,
     subject: "Welcome! Email Verified Successfully",
     html,
