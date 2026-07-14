@@ -11,6 +11,12 @@ const { sendError } = require("./utils/response");
 
 const app = express();
 
+// Render terminates TLS and forwards the original client IP through one proxy.
+// Trust only that first hop so express-rate-limit can identify clients correctly.
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 // ─── Security Headers ───
 app.use(helmet());
 
