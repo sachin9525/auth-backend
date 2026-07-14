@@ -1,11 +1,31 @@
 require("dotenv").config();
 const app = require("./app");
 const connectDB = require("./config/db");
+const User = require("./models/User");
 
 const PORT = process.env.PORT || 5000;
 
+const ensureConfiguredAdmin = async () => {
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (!adminEmail) return;
+
+  const admin = await User.findOneAndUpdate(
+    { email: adminEmail, isEmailVerified: true },
+    { $set: { role: "admin" } },
+    { new: true }
+  );
+
+  if (!admin) {
+    console.warn("ADMIN_EMAIL does not match a verified user.");
+    return;
+  }
+
+  console.log("Configured admin role is ready.");
+};
+
 const startServer = async () => {
   await connectDB();
+  await ensureConfiguredAdmin();
 
   const server = app.listen(PORT, () => {
     console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
