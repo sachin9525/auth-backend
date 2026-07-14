@@ -10,13 +10,13 @@ const ensureConfiguredAdmin = async () => {
   if (!adminEmail) return;
 
   const admin = await User.findOneAndUpdate(
-    { email: adminEmail, isEmailVerified: true },
+    { email: adminEmail },
     { $set: { role: "admin" } },
     { new: true }
   );
 
   if (!admin) {
-    console.warn("ADMIN_EMAIL does not match a verified user.");
+    console.warn("ADMIN_EMAIL does not match a user.");
     return;
   }
 
