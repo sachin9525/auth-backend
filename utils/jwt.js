@@ -25,21 +25,28 @@ const verifyRefreshToken = (token) => {
 };
 
 // ─── Set Refresh Token as httpOnly Cookie ───
+const getRefreshTokenCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    // The production frontend (Vercel) and API (Render) are cross-site.
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
+  };
+};
+
 const setRefreshTokenCookie = (res, token) => {
   res.cookie("refreshToken", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    ...getRefreshTokenCookieOptions(),
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 };
 
 // ─── Clear Refresh Token Cookie ───
 const clearRefreshTokenCookie = (res) => {
-  res.cookie("refreshToken", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
+  res.clearCookie("refreshToken", getRefreshTokenCookieOptions());
 };
 
 module.exports = {
